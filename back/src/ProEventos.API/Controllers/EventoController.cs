@@ -5,7 +5,7 @@ using System;
 namespace ProEventos.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]" )]
 public class EventoController : ControllerBase
 {
     public IEnumerable<Evento> _evento = new Evento[]{
