@@ -1,42 +1,33 @@
 using Microsoft.AspNetCore.Mvc;
+using ProEventos.API.Data;
 using ProEventos.API.Models;
+using SQLitePCL;
 using System;
 
 namespace ProEventos.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]" )]
+[Route("api/[controller]" )]//linha 10 e 9 não entendi
 public class EventoController : ControllerBase
 {
-    public IEnumerable<Evento> _evento = new Evento[]{
-        new Evento() {
-            Eventoid = 1,
-            Tema = "Angular 11 e dotnet 6",
-            Local = "Belo Horizonte",
-            Lote = "1° lote",
-            QtdPessoas = 250,
-            DataEvento = DateTime.Now.AddDays(2).ToString("dd/MM/yyyy"),
-            ImagemURL = "foto.png"
-        },
-        new Evento() {
-            Eventoid = 2,
-            Tema = "Angular E suas novidades",
-            Local = "São paulo",
-            Lote = "2° lote",
-            QtdPessoas = 200,
-            DataEvento = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy"),
-            ImagemURL = "foto1.png"
-        }   
-    
-    };    
-    public EventoController()
+    private readonly DataContext _context;//instacia? 
+
+    public EventoController(DataContext context)//injeção de dependencia?
     {
+        _context = context;
+        //DataContext e Injeção de Dependência: O construtor EventoController recebe uma instância de DataContext como parâmetro. Isso é chamado de injeção de dependência e é uma prática comum no ASP.NET Core para fornecer dependências a classes. O ASP.NET Core é responsável por criar uma instância de DataContext e passá-la para o construtor quando um EventoController é instanciado. Q?
     }
 
     [HttpGet]
     public IEnumerable<Evento> Get()
     {
-        return _evento;
+        return _context.Eventos; //por que todos?
+    }
+    //o que um controlador 
+    [HttpGet("{id}")]
+    public IEnumerable<Evento> GetById(int id)
+    {
+        return _context.Eventos.Where(evento => evento.Eventoid == id);
     }
 
     [HttpPost]

@@ -1,29 +1,32 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using ProEventos.API.Data;
-
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using SQLitePCL; // Importe a biblioteca SQLitePCL
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-// public Startup(IConfiguration configuration)
-//     {
-//             Configuration = configuration;
-//     }
-
-//public IConfiguration Configuration {get; }//sla tentei e não deu certo
+// Configuração do SQLitePCL
+SQLitePCL.Batteries.Init(); // Configura o SQLitePCL
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Conexão com o banco de dados
+builder.Services.AddDbContext<DataContext>(
+    options => options.UseSqlite(builder.Configuration.GetConnectionString("Default"))
+);
+
+// Configuração do Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DataContext>(
-    context => context.UseSqlite(builder.Configuration.GetConnectionString("Default"))
-);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure o ambiente de desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -31,9 +34,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-    
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
