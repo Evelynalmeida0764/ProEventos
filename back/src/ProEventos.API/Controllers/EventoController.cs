@@ -7,10 +7,10 @@ using System;
 namespace ProEventos.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]" )]//linha 10 e 9 não entendi
+[Route("api/[controller]" )]
 public class EventoController : ControllerBase
 {
-    private readonly DataContext _context;//instacia? 
+    private readonly DataContext _context;
 
     public EventoController(DataContext context)//injeção de dependencia?
     {
@@ -25,10 +25,16 @@ public class EventoController : ControllerBase
     }
     //o que um controlador 
     [HttpGet("{id}")]
-    public IEnumerable<Evento> GetById(int id)
+    public Evento GetById(int id)
     {
-        return _context.Eventos.Where(evento => evento.Eventoid == id);
+        return _context.Eventos.FirstOrDefault(
+            e => e.Eventoid == id);
     }
+
+    // public IEnumerable<Evento> GetById(int id)
+    // {
+    //     return _context.Eventos.Where(evento => evento.Eventoid == id);
+    // }
 
     [HttpPost]
     public string Post(){
